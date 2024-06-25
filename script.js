@@ -8,13 +8,18 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
         message: document.getElementById('message').value
     };
 
-    // เพิ่มข้อมูลใน LocalStorage
-    var savedData = localStorage.getItem('savedData') ? JSON.parse(localStorage.getItem('savedData')) : [];
-    savedData.push(dataToSave);
-    localStorage.setItem('savedData', JSON.stringify(savedData));
+    // สร้างข้อมูลที่จะบันทึกลงในไฟล์ .txt
+    var newData = `${dataToSave.name}, ${dataToSave.email}, ${dataToSave.message}\n`;
 
-    // สร้างไฟล์ .txt และดาวน์โหลด
-    var blob = new Blob([JSON.stringify(savedData)], { type: 'text/plain' });
+    // อ่านข้อมูลเก่าจากไฟล์ .txt หากมี
+    var existingData = localStorage.getItem('savedData') || '';
+
+    // บันทึกข้อมูลใหม่ไปยัง LocalStorage
+    var combinedData = existingData + newData;
+    localStorage.setItem('savedData', combinedData);
+
+    // ดาวน์โหลดไฟล์ .txt ที่มีข้อมูลทั้งหมด
+    var blob = new Blob([combinedData], { type: 'text/plain' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -23,4 +28,4 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-})
+});
