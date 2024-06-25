@@ -24,7 +24,33 @@
     <div id="status"></div>
 
     <!-- JavaScript for handling form submission -->
-    <script>
+    <script>document.getElementById('dataForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // หยุดการส่งฟอร์มเพื่อให้เราทำงานกับข้อมูล
+
+    // ดึงข้อมูลจาก input fields
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var message = document.getElementById('message').value;
+
+    // สร้างข้อความที่จะบันทึกลงในไฟล์ .txt
+    var data = 'Name: ' + name + '\nEmail: ' + email + '\nMessage: ' + message;
+
+    // ส่ง request ไปยังไฟล์ .txt ด้วย XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'save.php'); // เปลี่ยนเป็น URL ของไฟล์ save.php หรือสคริปต์เซิร์ฟเวอร์ที่จะใช้บันทึกข้อมูล
+    xhr.setRequestHeader('Content-Type', 'text/plain');
+    xhr.send(data);
+
+    // ให้ผู้ใช้ feedback หลังจาก submit ได้
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            document.getElementById('status').innerHTML = 'Data successfully saved!';
+            // เพิ่มการจัดการเพิ่มเติมที่นี่ เช่น reset ฟอร์มหรือการ redirect
+        } else {
+            document.getElementById('status').innerHTML = 'Failed to save data. Please try again.';
+        }
+    };
+});
         // JavaScript code will go here
     </script>
 </body>
